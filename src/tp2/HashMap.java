@@ -78,7 +78,14 @@ public class HashMap<KeyType, DataType> {
      * reassigns all contained values within the new map
      */
     private void rehash() {
-        return;
+        Node<KeyType, DataType>[] oldMap = map;
+
+        //allocateMap( CAPACITY_INCREASE_FACTOR * oldMap.length ); //ecq on utilise nextPrime pour avoir un nombre premier
+        size = 0;
+
+        /*for(int i = 0; i < oldMap.length; i++ )
+            if( oldMap[ i ] != null && oldMap[ i ].isActive )
+                insert( oldMap[ i ].element );*/
     }
 
     /** TODO
@@ -87,6 +94,9 @@ public class HashMap<KeyType, DataType> {
      * @return if key is already used in map
      */
     public boolean containsKey(KeyType key) {
+        for (Node node: map) {
+            if (node.key == key) return true;
+        }
         return false;
     }
 
@@ -96,6 +106,9 @@ public class HashMap<KeyType, DataType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
+        for (Node node: map) {
+            if (node.key == key) return (DataType) node.data;
+        }
         return null;
     }
 
@@ -121,6 +134,9 @@ public class HashMap<KeyType, DataType> {
      * Removes all nodes contained within the map
      */
     public void clear() {
+        for (Node node: map) {
+            this.remove((KeyType) node.key);
+        }
     }
 
     /**
