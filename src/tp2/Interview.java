@@ -49,6 +49,6 @@ public final class Interview {
      * This function takes a character as a parameter and returns if it is a letter in the alphabet
      */
     public static Boolean isAlphabetic(Character c){
-        return null;
+        return Character.isAlphabetic(c);
     }
 }

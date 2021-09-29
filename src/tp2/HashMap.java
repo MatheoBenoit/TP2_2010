@@ -88,6 +88,13 @@ public class HashMap<KeyType, DataType> {
                 insert( oldMap[ i ].element );*/
     }
 
+    public Node getNode(KeyType key){
+        for (Node node: map) {
+            if (node.key == key) return node;
+        }
+        return null;
+    }
+
     /** TODO
      * Finds if map contains a key
      * @param key Key which we want to know if exists within map
@@ -106,10 +113,7 @@ public class HashMap<KeyType, DataType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        for (Node node: map) {
-            if (node.key == key) return (DataType) node.data;
-        }
-        return null;
+        return (DataType)this.getNode(key).data;
     }
 
     /**TODO
@@ -117,8 +121,12 @@ public class HashMap<KeyType, DataType> {
      * @param key Key which will have its value assigned or reassigned
      * @return Old DataType instance at key (null if none existed)
      */
-    public DataType put(KeyType key, DataType value) {
-        return null;
+    public DataType put(KeyType key, DataType value) { //A REVOIR
+        DataType oldData = this.get(key); //sassurer que cest pas une reference
+        for (Node node: map) { //on pourrait rappeler get et assigner une nouvelle valeur mais avant verifier la ref
+            if (node.key == key) node.data = value;
+        }
+        return oldData;
     }
 
     /**TODO
@@ -127,7 +135,11 @@ public class HashMap<KeyType, DataType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType remove(KeyType key) {
-        return null;
+        DataType oldData = this.get(key); //sassurer que cest pas une referencede
+        //this.getNode(key) = null; ??????????????????? cmt fkn delete, faudrait trouver celui qui pointe et le faire pointer vers celui dapres
+        this.size -= 1;
+
+        return oldData;
     }
 
     /**TODO
@@ -137,6 +149,7 @@ public class HashMap<KeyType, DataType> {
         for (Node node: map) {
             this.remove((KeyType) node.key);
         }
+        this.size = 0;
     }
 
     /**
