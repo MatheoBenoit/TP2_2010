@@ -93,8 +93,8 @@ public class HashMap<KeyType, DataType> {
     }
 
     public Node<KeyType, DataType> getNode(KeyType key){
-        for (Node<KeyType, DataType> node: map) {
-            if (node.key == key) return node;
+        for (HashMap.Node<KeyType, DataType> node : this.map) {
+            if (node != null && node.key == key) return node;
         }
         return null;
     }
@@ -106,7 +106,7 @@ public class HashMap<KeyType, DataType> {
      */
     public boolean containsKey(KeyType key) {
         for (Node<KeyType, DataType> node: map) {
-            if (node.key == key) return true;
+            if (node != null && node.key == key) return true;
         }
         return false;
     }
@@ -117,6 +117,7 @@ public class HashMap<KeyType, DataType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
+        if (this.getNode(key) == null) return null; // pas très beau, mais fonctionne
         return this.getNode(key).data;
     }
 
@@ -128,7 +129,7 @@ public class HashMap<KeyType, DataType> {
     public DataType put(KeyType key, DataType value) {
         DataType oldData = this.get(key);
         for (Node<KeyType, DataType> node: map) {
-            if (node.key == key) node.data = value;
+            if (node != null && node.key == key) node.data = value;
         }
         return oldData;
     }
@@ -140,6 +141,9 @@ public class HashMap<KeyType, DataType> {
      */
     public DataType remove(KeyType key) {
         Node<KeyType, DataType> currentNode = this.getNode(key);
+
+        if (currentNode == null) return null;
+
         DataType oldData = currentNode.data;
         Node<KeyType, DataType> next =  currentNode.next;
 
@@ -155,6 +159,7 @@ public class HashMap<KeyType, DataType> {
         //currentNode = null;
         this.size--;
 
+
         return oldData;
     }
 
@@ -163,7 +168,7 @@ public class HashMap<KeyType, DataType> {
      */
     public void clear() {
         for (Node<KeyType, DataType> node: map) {
-            this.remove( node.key);
+            if (node != null) this.remove(node.key);
         }
         this.size = 0; //for safety
     }
