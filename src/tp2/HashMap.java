@@ -1,5 +1,7 @@
 package tp2;
 
+import java.util.List;
+
 public class HashMap<KeyType, DataType> {
 
     private static final int DEFAULT_CAPACITY = 20;
@@ -78,18 +80,20 @@ public class HashMap<KeyType, DataType> {
      * reassigns all contained values within the new map
      */
     private void rehash() {
-        Node<KeyType, DataType>[] oldMap = map;
+        if (!this.needRehash()) return; //for safety
 
-        //allocateMap( CAPACITY_INCREASE_FACTOR * oldMap.length ); //ecq on utilise nextPrime pour avoir un nombre premier
-        size = 0;
+        Node<KeyType, DataType>[] oldMap = this.map;
+        HashMap<KeyType, DataType> newMap = new HashMap<>(CAPACITY_INCREASE_FACTOR * oldMap.length); //voir si nextPrime
 
-        /*for(int i = 0; i < oldMap.length; i++ )
-            if( oldMap[ i ] != null && oldMap[ i ].isActive )
-                insert( oldMap[ i ].element );*/
+        for(int i = 0; i < oldMap.length; i++ )
+            if( oldMap[ i ] != null ) {
+                newMap.map[i] = oldMap[i];
+                newMap.size++;
+            }
     }
 
-    public Node getNode(KeyType key){
-        for (Node node: map) {
+    public Node<KeyType, DataType> getNode(KeyType key){
+        for (Node<KeyType, DataType> node: map) {
             if (node.key == key) return node;
         }
         return null;
@@ -101,7 +105,7 @@ public class HashMap<KeyType, DataType> {
      * @return if key is already used in map
      */
     public boolean containsKey(KeyType key) {
-        for (Node node: map) {
+        for (Node<KeyType, DataType> node: map) {
             if (node.key == key) return true;
         }
         return false;
@@ -113,7 +117,7 @@ public class HashMap<KeyType, DataType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        return (DataType)this.getNode(key).data;
+        return this.getNode(key).data;
     }
 
     /**TODO
@@ -121,9 +125,9 @@ public class HashMap<KeyType, DataType> {
      * @param key Key which will have its value assigned or reassigned
      * @return Old DataType instance at key (null if none existed)
      */
-    public DataType put(KeyType key, DataType value) { //A REVOIR
-        DataType oldData = this.get(key); //sassurer que cest pas une reference
-        for (Node node: map) { //on pourrait rappeler get et assigner une nouvelle valeur mais avant verifier la ref
+    public DataType put(KeyType key, DataType value) {
+        DataType oldData = this.get(key);
+        for (Node<KeyType, DataType> node: map) {
             if (node.key == key) node.data = value;
         }
         return oldData;
@@ -135,9 +139,21 @@ public class HashMap<KeyType, DataType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType remove(KeyType key) {
-        DataType oldData = this.get(key); //sassurer que cest pas une referencede
-        //this.getNode(key) = null; ??????????????????? cmt fkn delete, faudrait trouver celui qui pointe et le faire pointer vers celui dapres
-        this.size -= 1;
+        Node<KeyType, DataType> currentNode = this.getNode(key);
+        DataType oldData = currentNode.data;
+        Node<KeyType, DataType> next =  currentNode.next;
+
+        Node<KeyType, DataType> previous = null;
+        for (Node<KeyType, DataType> node : map)
+            if (node.next == currentNode) {
+                previous = node;
+                break; //we found what we were looking for so exit
+            }
+
+        assert previous != null;
+        previous.next = next;
+        //currentNode = null;
+        this.size--;
 
         return oldData;
     }
@@ -146,10 +162,10 @@ public class HashMap<KeyType, DataType> {
      * Removes all nodes contained within the map
      */
     public void clear() {
-        for (Node node: map) {
-            this.remove((KeyType) node.key);
+        for (Node<KeyType, DataType> node: map) {
+            this.remove( node.key);
         }
-        this.size = 0;
+        this.size = 0; //for safety
     }
 
     /**
