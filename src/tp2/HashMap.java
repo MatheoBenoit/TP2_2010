@@ -108,11 +108,14 @@ public class HashMap<KeyType, DataType> {
     public Node<KeyType, DataType> getNode(KeyType key){
         for (int i = 0; i < (this.map).length; i++) {
             HashMap.Node<KeyType, DataType> node = this.map[i];
-            if (node != null && node.key == key) return node;
+            if (node != null) {
+                if (node.key == key) return node;
+                while (node != null && node.next != null) {
+                    if (node.next.key == key) return node.next;
+                    node = node.next;
+                }
+            }
         }
-       /* for (HashMap.Node<KeyType, DataType> node : this.map) {
-            if (node != null && node.key == key) return node;
-        }*/
         return null;
     }
 
@@ -124,11 +127,16 @@ public class HashMap<KeyType, DataType> {
     public boolean containsKey(KeyType key) {
         for (int i = 0; i < (this.map).length; i++) {
             HashMap.Node<KeyType, DataType> node = this.map[i];
-            if (node != null && node.key == key) return true;
+            if (node != null) {
+                if (node.key.equals(key)) return true;
+                while (node != null && node.next != null) {
+                    HashMap.Node<KeyType, DataType> next = node.next;
+                    if (next.key.equals(key)) return true;
+                    System.out.println(node.key.toString());
+                    node = next;
+                }
+            }
         }
-        /*for (Node<KeyType, DataType> node: this.map) {
-            if (node != null && node.key == key) return true;
-        }*/
         return false;
     }
 
@@ -152,7 +160,7 @@ public class HashMap<KeyType, DataType> {
         if (oldData != null) {
             for(int i = 0; i < this.map.length; ++i) {
                 HashMap.Node<KeyType, DataType> node = this.map[i];
-                if (node != null && node.key == key) {
+                if (node != null && node.key.equals(key)) {
                     node.data = value;
                     return oldData;
                 }
@@ -205,7 +213,6 @@ public class HashMap<KeyType, DataType> {
         if (previous != null) previous.next = next;
         currentNode = null;
         this.size--;
-
 
         return oldData;
     }
