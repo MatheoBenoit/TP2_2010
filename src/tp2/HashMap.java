@@ -2,13 +2,14 @@ package tp2;
 
 import java.util.List;
 
+
 public class HashMap<KeyType, DataType> {
 
     private static final int DEFAULT_CAPACITY = 20;
     private static final float DEFAULT_LOAD_FACTOR = 0.5f;
     private static final int CAPACITY_INCREASE_FACTOR = 2;
 
-    private Node<KeyType, DataType>[] map;
+    private Node[] map;
     private int size = 0;
     private int capacity;
     private final float loadFactor; // Compression factor
@@ -80,7 +81,7 @@ public class HashMap<KeyType, DataType> {
      * reassigns all contained values within the new map
      */
     private void rehash() {
-        if (!this.needRehash()) return; //for safety
+        /*if (!this.needRehash()) return; //for safety
 
         Node<KeyType, DataType>[] oldMap = this.map;
         HashMap<KeyType, DataType> newMap = new HashMap<>(CAPACITY_INCREASE_FACTOR * oldMap.length); //voir si nextPrime
@@ -93,7 +94,15 @@ public class HashMap<KeyType, DataType> {
         }
         this.map = newMap.map;
         this.size = newMap.size;
-        this.capacity = newMap.capacity;
+        this.capacity = newMap.capacity;*/
+        this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
+        Node<KeyType, DataType>[] oldMap = this.map;
+        this.map = new Node[this.capacity];
+        for(Node node : oldMap){
+            do{
+                this.put((KeyType)node.key, (DataType)node.data);
+            }while(node.next != null);
+        }
     }
 
     public Node<KeyType, DataType> getNode(KeyType key){
@@ -150,14 +159,15 @@ public class HashMap<KeyType, DataType> {
             }
         }
         else {
-            //if (this.map[hash(key)] == null) {
+            if (this.map[hash(key)] == null) {
                 this.map[hash(key)] = new Node(key, value);
                 if (++size > capacity)
                     rehash();
-            //}
-            /*else {
-                this.map[hash(key)].next = new Node(key, value);
-            }*/
+            }
+            else {
+                while (this.map[hash(key)].next != null)
+                    this.map[hash(key)].next = new Node(key, value);
+            }
         }
 
         return oldData;
@@ -204,9 +214,13 @@ public class HashMap<KeyType, DataType> {
      * Removes all nodes contained within the map
      */
     public void clear() {
-        for (Node<KeyType, DataType> node: map) {
-            if (node != null) this.remove(node.key);
+        for (int i = 0; i < map.length; i++) {
+            map[i] = null;
         }
+        /*for (Node<KeyType, DataType> node: map) {
+            node = null;
+            //if (node != null) this.remove(node.key);
+        }*/
         this.size = 0; //for safety
     }
 
