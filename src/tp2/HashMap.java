@@ -150,14 +150,14 @@ public class HashMap<KeyType, DataType> {
             }
         }
         else {
-            if (this.map[hash(key)] == null) {
+            //if (this.map[hash(key)] == null) {
                 this.map[hash(key)] = new Node(key, value);
                 if (++size > capacity)
                     rehash();
-            }
-            else {
+            //}
+            /*else {
                 this.map[hash(key)].next = new Node(key, value);
-            }
+            }*/
         }
 
         return oldData;

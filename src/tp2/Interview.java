@@ -30,9 +30,7 @@ public final class Interview {
 
         Integer sum = 0;
         for (int i = 0; i < Math.max(firstMap.size(), secondMap.size()); i++) {
-
-
-
+            //sum += Math.abs(firstMap.get - secondMap[i]);
         }
 
         return sum;
