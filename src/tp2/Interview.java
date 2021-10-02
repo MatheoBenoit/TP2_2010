@@ -34,7 +34,7 @@ public final class Interview {
 
         for (Character key : firstMap.keySet()) {
             Integer result = firstMap.get(key);
-            sum1 = (result != null) ? result : 0;
+            sum1 = result;
             result = secondMap.get(key);
             sum2 = (result != null) ? result : 0;
             sum += Math.abs(sum1 - sum2);
