@@ -29,8 +29,19 @@ public final class Interview {
         HashMap<Character, Integer> secondMap = getFrequencyHashTable(readFile(filename2));
 
         Integer sum = 0;
-        for (int i = 0; i < Math.max(firstMap.size(), secondMap.size()); i++) {
-            //sum += Math.abs(firstMap.get - secondMap[i]);
+        Integer sum1 = 0;
+        Integer sum2 = 0;
+
+        for (Character key : firstMap.keySet()) {
+            Integer result = firstMap.get(key);
+            sum1 = (result != null) ? result : 0;
+            result = secondMap.get(key);
+            sum2 = (result != null) ? result : 0;
+            sum += Math.abs(sum1 - sum2);
+        }
+        for (Character key : secondMap.keySet()) {
+            if (firstMap.get(key) == null)
+                sum += secondMap.get(key);
         }
 
         return sum;
@@ -76,11 +87,13 @@ public final class Interview {
 
         for (int i = 0; i < text.length(); i++) {
             char character = text.charAt(i);
-            Integer freq = map.get(character);
-            if (freq != null) {
-                map.put(character, ++freq);
-            } else {
-                map.put(character, 1);
+            if (isAlphabetic(character)){
+                Integer freq = map.get(character);
+                if (freq != null) {
+                    map.put(character, ++freq);
+                } else {
+                    map.put(character, 1);
+                }
             }
         }
         return map;
