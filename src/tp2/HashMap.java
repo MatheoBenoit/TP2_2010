@@ -166,7 +166,7 @@ public class HashMap<KeyType, DataType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType put(KeyType key, DataType value) {
-        Node<KeyType, DataType> node = this.map[this.hash(key)];
+        /*Node<KeyType, DataType> node = this.map[this.hash(key)];
         if (node != null) {
             DataType old = node.data;
             boolean smKey = (node.key.equals(key));
@@ -193,7 +193,7 @@ public class HashMap<KeyType, DataType> {
             }
             this.map[this.hash(key)] = new Node<>(key, value);
             return null;
-        }
+        }*/
         /*DataType oldData = this.get(key);
         if (oldData != null) {
             for(int i = 0; i < this.map.length; ++i) {
@@ -220,6 +220,7 @@ public class HashMap<KeyType, DataType> {
         }
 
         return oldData;*/
+
 
         /*DataType oldData = this.get(key);
         for (int i = 0; i < (this.map).length; i++) {
