@@ -1,6 +1,8 @@
 package tp2;
 
 
+import java.util.Arrays;
+
 public class HashMap<KeyType, DataType> {
 
     private static final int DEFAULT_CAPACITY = 20;
@@ -140,75 +142,28 @@ public class HashMap<KeyType, DataType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType put(KeyType key, DataType value) {
-        Node<KeyType, DataType> node = this.map[this.hash(key)];
+        int index = hash(key);
+        Node<KeyType, DataType> node = map[index];
+
         if (node != null) {
-            DataType old = node.data;
-            boolean smKey = (node.key.equals(key));
-            while (node.next != null && !smKey) {
-                if (node.key.equals(key)) {
-                    smKey = true;
-                } else {
-                    node = node.next;
-                }
+            DataType oldData = node.data;
+            boolean existingKey = node.key.equals(key);
+            while (node.next != null && !existingKey) {
+                existingKey = node.key.equals(key);
+                if (!existingKey) node = node.next;
             }
-
-            if (smKey) {
+            if (existingKey) {
                 node.data = value;
-            } else {
-                size++;
-                node.next = new Node<>(key, value);
+                return oldData;
             }
-            return old;
-
-
-        } else {
-            size++;
-            if (this.needRehash()) {
-                this.rehash();
-                size++;
-            }
-            this.map[this.hash(key)] = new Node<>(key, value);
-            return null;
-        }
-        /*DataType oldData = this.get(key);
-        if (oldData != null) {
-            for(int i = 0; i < this.map.length; ++i) {
-                HashMap.Node<KeyType, DataType> node = this.map[i];
-                if (node != null && node.key.equals(key)) {
-                    node.data = value;
-                    return oldData;
-                }
-            }
-        }
-        else {
-            int index = hash(key);
-            if (map[index] == null) {
-                map[index] = new Node(key, value);
-                size++;
-                if (needRehash()) {
-                    rehash();
-                    size++;
-                }
-            }
-            else {
-                while (map[index].next != null);
-                map[index] = new Node(key, value);
-                size++;
-            }
+            node.next = new Node<>(key, value);
         }
 
-        return oldData;*/
+        else map[index] = new Node<>(key, value);
+        size++;
+        if (needRehash()) rehash();
 
-
-        /*DataType oldData = this.get(key);
-        for (int i = 0; i < (this.map).length; i++) {
-            HashMap.Node<KeyType, DataType> node = this.map[i];
-            if (node != null && node.key == key) node.data = value;
-        }
-        for (Node<KeyType, DataType> node: map) {
-            if (node != null && node.key == key) node.data = value;
-        }
-        return oldData;*/
+        return null;
     }
 
     /**TODO
@@ -240,10 +195,8 @@ public class HashMap<KeyType, DataType> {
      * Removes all nodes contained within the map
      */
     public void clear() {
-        for (Node<KeyType, DataType> node: map) {
-            if (node != null) this.remove(node.key);
-        }
-        this.size = 0; //for safety
+        Arrays.fill(map, null);
+        this.size = 0;
     }
 
     /**
