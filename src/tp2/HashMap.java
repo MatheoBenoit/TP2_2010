@@ -96,20 +96,22 @@ public class HashMap<KeyType, DataType> {
         this.size = newMap.size;
         this.capacity = newMap.capacity;*/
         this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
+        this.size = 0;
         Node<KeyType, DataType>[] oldMap = this.map;
         this.map = new Node[this.capacity];
         for(Node node : oldMap){
-            while(node != null && node.next != null) {
+            while(node != null) {
                 this.put((KeyType)node.key, (DataType)node.data);
+                node = node.next;
             }
         }
         //this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
-        Node<KeyType, DataType>[] newMap = new Node[capacity() * CAPACITY_INCREASE_FACTOR;];
+        /*Node<KeyType, DataType>[] newMap = new Node[capacity() * CAPACITY_INCREASE_FACTOR;];
         for(Node node : map){
             while(node != null && node.next != null) {
                 this.put((KeyType)node.key, (DataType)node.data);
             }
-        }
+        }*/
 
     }
 
