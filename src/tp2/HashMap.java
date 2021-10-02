@@ -99,15 +99,23 @@ public class HashMap<KeyType, DataType> {
         Node<KeyType, DataType>[] oldMap = this.map;
         this.map = new Node[this.capacity];
         for(Node node : oldMap){
-            do{
+            while(node != null && node.next != null) {
                 this.put((KeyType)node.key, (DataType)node.data);
-            }while(node.next != null);
+            }
         }
+        //this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
+        Node<KeyType, DataType>[] newMap = new Node[capacity() * CAPACITY_INCREASE_FACTOR;];
+        for(Node node : map){
+            while(node != null && node.next != null) {
+                this.put((KeyType)node.key, (DataType)node.data);
+            }
+        }
+
     }
 
     public Node<KeyType, DataType> getNode(KeyType key){
         for (int i = 0; i < (this.map).length; i++) {
-            HashMap.Node<KeyType, DataType> node = this.map[i];
+            HashMap.Node<KeyType, DataType> node = map[i];
             if (node != null) {
                 if (node.key == key) return node;
                 while (node != null && node.next != null) {
@@ -126,7 +134,7 @@ public class HashMap<KeyType, DataType> {
      */
     public boolean containsKey(KeyType key) {
         for (int i = 0; i < (this.map).length; i++) {
-            HashMap.Node<KeyType, DataType> node = this.map[i];
+            HashMap.Node<KeyType, DataType> node = map[i];
             if (node != null) {
                 if (node.key.equals(key)) return true;
                 while (node != null && node.next != null) {
@@ -156,7 +164,35 @@ public class HashMap<KeyType, DataType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType put(KeyType key, DataType value) {
-        DataType oldData = this.get(key);
+        Node<KeyType, DataType> node = this.map[this.hash(key)];
+        if (node != null) {
+            DataType old = node.data;
+            boolean smKey = (node.key.equals(key));
+            while (node.next != null && !smKey) {
+                if (node.key.equals(key)) {
+                    smKey = true;
+                } else {
+                    node = node.next;
+                }
+            }
+
+            if (smKey) {
+                node.data = value;
+            } else {
+                node.next = new Node<>(key, value);
+            }
+            return old;
+
+
+        } else {
+            size++;
+            if (this.needRehash()) {
+                this.rehash();
+            }
+            this.map[this.hash(key)] = new Node<>(key, value);
+            return null;
+        }
+        /*DataType oldData = this.get(key);
         if (oldData != null) {
             for(int i = 0; i < this.map.length; ++i) {
                 HashMap.Node<KeyType, DataType> node = this.map[i];
@@ -167,18 +203,22 @@ public class HashMap<KeyType, DataType> {
             }
         }
         else {
-            if (this.map[hash(key)] == null) {
-                this.map[hash(key)] = new Node(key, value);
-                if (++size > capacity)
-                    rehash();
+            int index = hash(key);
+            if (map[index] == null) {
+                map[index] = new Node(key, value);
+                size++;
+                if (needRehash()) rehash();
             }
             else {
-                while (this.map[hash(key)].next != null)
+                while (map[index].next != null);
+                map[index] = new Node(key, value);
+                /*while (this.map[hash(key)].next != null)
                     this.map[hash(key)].next = new Node(key, value);
             }
         }
 
-        return oldData;
+        return oldData;*/
+
         /*DataType oldData = this.get(key);
         for (int i = 0; i < (this.map).length; i++) {
             HashMap.Node<KeyType, DataType> node = this.map[i];
