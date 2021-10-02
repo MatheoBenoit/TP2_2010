@@ -119,9 +119,9 @@ public class HashMap<KeyType, DataType> {
         for (int i = 0; i < (this.map).length; i++) {
             HashMap.Node<KeyType, DataType> node = map[i];
             if (node != null) {
-                if (node.key == key) return node;
+                if (node.key.equals(key)) return node;
                 while (node != null && node.next != null) {
-                    if (node.next.key == key) return node.next;
+                    if (node.next.key.equals(key)) return node.next;
                     node = node.next;
                 }
             }
@@ -142,7 +142,6 @@ public class HashMap<KeyType, DataType> {
                 while (node != null && node.next != null) {
                     HashMap.Node<KeyType, DataType> next = node.next;
                     if (next.key.equals(key)) return true;
-                    System.out.println(node.key.toString());
                     node = next;
                 }
             }
