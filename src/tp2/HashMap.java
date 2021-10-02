@@ -1,7 +1,5 @@
 package tp2;
 
-import java.util.List;
-
 
 public class HashMap<KeyType, DataType> {
 
@@ -9,7 +7,7 @@ public class HashMap<KeyType, DataType> {
     private static final float DEFAULT_LOAD_FACTOR = 0.5f;
     private static final int CAPACITY_INCREASE_FACTOR = 2;
 
-    private Node[] map;
+    private Node<KeyType, DataType>[] map;
     private int size = 0;
     private int capacity;
     private final float loadFactor; // Compression factor
@@ -85,20 +83,19 @@ public class HashMap<KeyType, DataType> {
         this.size = 0;
         Node<KeyType, DataType>[] oldMap = this.map;
         this.map = new Node[this.capacity];
-        for(Node node : oldMap){
+        for(Node<KeyType, DataType> node : oldMap){
             while(node != null) {
-                this.put((KeyType)node.key, (DataType)node.data);
+                this.put(node.key, node.data);
                 node = node.next;
             }
         }
     }
 
     public Node<KeyType, DataType> getNode(KeyType key){
-        for (int i = 0; i < (this.map).length; i++) {
-            HashMap.Node<KeyType, DataType> node = map[i];
+        for (Node<KeyType, DataType> node : this.map) {
             if (node != null) {
                 if (node.key.equals(key)) return node;
-                while (node != null && node.next != null) {
+                while (node.next != null) {
                     if (node.next.key.equals(key)) return node.next;
                     node = node.next;
                 }
@@ -113,12 +110,11 @@ public class HashMap<KeyType, DataType> {
      * @return if key is already used in map
      */
     public boolean containsKey(KeyType key) {
-        for (int i = 0; i < (this.map).length; i++) {
-            HashMap.Node<KeyType, DataType> node = map[i];
+        for (Node<KeyType, DataType> node : this.map) {
             if (node != null) {
                 if (node.key.equals(key)) return true;
-                while (node != null && node.next != null) {
-                    HashMap.Node<KeyType, DataType> next = node.next;
+                while (node.next != null) {
+                    Node<KeyType, DataType> next = node.next;
                     if (next.key.equals(key)) return true;
                     node = next;
                 }
@@ -133,8 +129,9 @@ public class HashMap<KeyType, DataType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        if (this.getNode(key) == null) return null; // pas très beau, mais fonctionne
-        return this.getNode(key).data;
+        Node<KeyType, DataType> node = this.getNode(key);
+        if (node == null) return null;
+        return node.data;
     }
 
     /**TODO
@@ -235,9 +232,7 @@ public class HashMap<KeyType, DataType> {
             }
 
         if (previous != null) previous.next = next;
-        currentNode = null;
         this.size--;
-
         return oldData;
     }
 
@@ -245,13 +240,9 @@ public class HashMap<KeyType, DataType> {
      * Removes all nodes contained within the map
      */
     public void clear() {
-        for (int i = 0; i < map.length; i++) {
-            map[i] = null;
+        for (Node<KeyType, DataType> node: map) {
+            if (node != null) this.remove(node.key);
         }
-        /*for (Node<KeyType, DataType> node: map) {
-            node = null;
-            //if (node != null) this.remove(node.key);
-        }*/
         this.size = 0; //for safety
     }
 

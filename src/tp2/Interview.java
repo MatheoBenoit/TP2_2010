@@ -29,8 +29,8 @@ public final class Interview {
         HashMap<Character, Integer> secondMap = getFrequencyHashTable(readFile(filename2));
 
         Integer sum = 0;
-        Integer sum1 = 0;
-        Integer sum2 = 0;
+        Integer sum1;
+        Integer sum2;
 
         for (Character key : firstMap.keySet()) {
             Integer result = firstMap.get(key);
@@ -43,7 +43,6 @@ public final class Interview {
             if (firstMap.get(key) == null)
                 sum += secondMap.get(key);
         }
-
         return sum;
     }
 
@@ -73,7 +72,7 @@ public final class Interview {
         String tmp;
 
         while ((tmp = br.readLine()) != null) {
-            text += tmp;
+            text = text.concat(tmp);
         }
         return text;
     }
