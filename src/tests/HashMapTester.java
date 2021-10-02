@@ -219,6 +219,7 @@ public class HashMapTester {
         for (int i = 0; i <  n && isValidRehash; ++i){
             String index = String.valueOf(i);
             Integer value = map.get("myKey" + index);
+            System.out.print
             isValidRehash = value != null && map.get("myKey" + index) == i;
         }
 

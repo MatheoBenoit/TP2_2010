@@ -95,22 +95,23 @@ public class HashMap<KeyType, DataType> {
         this.map = newMap.map;
         this.size = newMap.size;
         this.capacity = newMap.capacity;*/
-        this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
+        /*this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
         Node<KeyType, DataType>[] oldMap = this.map;
         this.map = new Node[this.capacity];
         for(Node node : oldMap){
             while(node != null && node.next != null) {
                 this.put((KeyType)node.key, (DataType)node.data);
             }
-        }
+        }*/
         //this.capacity = capacity() * CAPACITY_INCREASE_FACTOR;
-        Node<KeyType, DataType>[] newMap = new Node[capacity() * CAPACITY_INCREASE_FACTOR;];
+        HashMap<KeyType, DataType> newMap = new HashMap(capacity() * CAPACITY_INCREASE_FACTOR, loadFactor);
         for(Node node : map){
             while(node != null && node.next != null) {
-                this.put((KeyType)node.key, (DataType)node.data);
+                newMap.put((KeyType)node.key, (DataType)node.data);
+                node = node.next;
             }
         }
-
+        map = newMap.map;
     }
 
     public Node<KeyType, DataType> getNode(KeyType key){
